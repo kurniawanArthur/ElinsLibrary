@@ -80,37 +80,47 @@ listBooks books[50] = {
     {50, "Hujan Matahari" ,"Fira Basuki",2005},
 };
 
+void back() {
+    char a;
+    cout << "\nTekan 'x' untuk kembali ke menu" << endl;
+    cin >> a;
+    if (a == 'x') {
+        clearTerminal();
+    }
+}
+
 void about() {
     // Menu Tentang Perpustakaan
-    char a;
     clearTerminal();
     cout << "Selamat datang di Elins Library – tempat di mana pengetahuan bersatu dengan kreativitas! Di sini, kami merayakan warisan intelektual yang dibangun oleh tiga pikiran brilian: Luthfi Awaludin Safi, pakar sejarah yang membawa kita ke masa lalu; Kurniawan Arthur Jarnuzi, ilmuwan komputer yang membuka jendela dunia digital; dan Muhammad Winner An Nuur Alam Suskalanggeng, sastrawan yang memberi ruang pada keindahan kata.\n" << endl;
     cout << "Mari temukan keajaiban di setiap halaman buku, jelajahi sumber daya digital yang mutakhir, dan rasakan kehangatan seni yang menyelimuti ruang baca kami.Perpustakaan ini bukan hanya tempat untuk membaca, tapi juga untuk memimpikan, mencipta, dan berkumpul sebagai komunitas pencinta ilmu.\n" << endl;
     cout << "Selamat menikmati petualangan intelektual Anda di Elins Library tempat di mana setiap cerita memiliki peluang untuk merajut kisahnya sendiri.Selamat membaca dan menemukan inspirasi!\n";
     cout << "\nTekan 'x' untuk kembali ke menu" << endl;
-    cin >> a;
-    if (a == 'x') {
-        clearTerminal();
-    }
+    back();
 }
 
 void bookList() {
     // Menu Daftar Buku
-    char a;
     clearTerminal();
     cout << "Daftar Buku - Elins Library\n" << endl;
     for (int i = 0; i < 50; i++) {
         cout << books[i].id << ". " << books[i].judul << " " << books[i].namaPenulis << " " << books[i].tahunTerbit << "." << endl;
     }
-    cout << "\nTekan 'x' untuk kembali ke menu" << endl;
-    cin >> a;
-    if (a == 'x') {
-        clearTerminal();
-    }
+    back();
 }
 
 void borrowing() {
-    cout << "daftar buku yang tersedia: \n";
+    cout << "Daftar buku yang bisa dipinjam: \n" << endl;
+    srand(time(nullptr));
+    int randomNum = rand() % 25 + 1;
+    int randomNum2 = rand() % 50 + 25;
+    int dif = randomNum2 - randomNum;
+    int temp = 0;
+    for (int i = randomNum; i < randomNum2; i++) {
+        cout << books[temp].id << ". " << books[i].judul << " " << books[i].namaPenulis << " " << books[i].tahunTerbit << "." << endl;
+        temp++;
+    }  
+    back();
 }
 
 void returnBook() {
