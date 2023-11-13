@@ -1,36 +1,25 @@
-﻿#include <iostream> // input output
-#include <iomanip>
-#include <thread>  // Untuk fungsi sleep_for
-#include <chrono>  // Untuk waktu
-#include <cstdlib> // Untuk fungsi system()
-#include <ctime>
+﻿#include <iostream> // Untuk fungsi input output.
+#include <thread>   // Untuk fungsi sleep_for delay eksekusi program.
+#include <chrono>   // Digunakan bersama library thread, Untuk fungsi pengaturan waktu dan melakukan delay.
+#include <cstdlib>  // Untuk fungsi system() digunakan untuk pembersihan terminal.
+#include <ctime>    // Untuk fungsi waktu saat ini time().
 
 using namespace std;
 
+bool isUserRegistered = false, isAccesApp = false, isBorrow = false;
+
+// Deklarasi fungsi
+void menuPage(), greeting(), clearTerminal(), back(), registerUser(), loginUser(), about(), bookList(), borrowing(), returnBook(), runProgram() ;
+
+// Data
 struct userData {
     string username;
     string password;
     string loanHistory;
 };
-
-userData user[1];
-
-bool isUserRegistered = false, isAccesApp = true, isBorrow = false;
-void menuPage(), thankU();
-
-/*void getLocalTime() {
-    // Mengatur zona waktu ke WIB (UTC+7)
-    std::chrono::hours offset(7);
-    std::chrono::time_point<std::chrono::system_clock> currentTime = std::chrono::system_clock::now() + offset;
-
-    // Mengonversi waktu ke time_t
-    std::time_t time = std::chrono::system_clock::to_time_t(currentTime);
-
-    // Menampilkan tanggal dan bulan dalam zona waktu WIB
-    std::tm* wibTime = std::localtime(&time);
-    std::cout << std::put_time(wibTime, "%d %B") << std::endl;
-}*/
-
+userData user[1] = {
+    {"username", "password", "loanHistory"}
+};
 struct listBooks {
     // struct daftar buku
     int numb;
@@ -39,16 +28,6 @@ struct listBooks {
     int tahunTerbit;
     long long uniqueId;
 };
-
-void clearTerminal() {
-    // Membersihkan terminal
-    #ifdef _WIN32
-    system("cls"); // Untuk Windows
-    #else
-    system("clear"); // Untuk Unix/Linux
-    #endif
-}
-
 listBooks books[50] = {
     // Daftar 50 buku
     {1, "Pemburu Mimpi", "Haruki Murakami", 2009, 0001},
@@ -103,15 +82,104 @@ listBooks books[50] = {
     {50, "Hujan Matahari" ,"Fira Basuki",2005, 0062},
 };
 
+// Navigasi & Shortcut
+string thankU(){
+    return  R"(
+         /$$$$$$$$ /$$                           /$$             /$$     /$$                  /$$
+        |__  $$__/| $$                          | $$            |  $$   /$$/                 | $$
+           | $$   | $$$$$$$   /$$$$$$  /$$$$$$$ | $$   /$$       \  $$ /$$//$$$$$$  /$$   /$$| $$
+           | $$   | $$__  $$ |____  $$| $$__  $$| $$  /$$/        \  $$$$//$$__  $$| $$  | $$| $$
+           | $$   | $$  \ $$  /$$$$$$$| $$  \ $$| $$$$$$/          \  $$/| $$  \ $$| $$  | $$|__/
+           | $$   | $$  | $$ /$$__  $$| $$  | $$| $$_  $$           | $$ | $$  | $$| $$  | $$    
+           | $$   | $$  | $$|  $$$$$$$| $$  | $$| $$ \  $$          | $$ |  $$$$$$/|  $$$$$$/ /$$
+           |__/   |__/  |__/ \_______/|__/  |__/|__/  \__/          |__/  \______/  \______/ |__/
+    )";
+}
+void countdown(int seconds) {
+    cout << endl;
+    for (int i = seconds; i > 0; --i) {
+        cout << "Tunggu sebentar! Kamu akan diarahkan ke halaman selanjutnya dalam: " << i << " seconds...\r" << flush;
+        this_thread::sleep_for(chrono::seconds(1));
+    }
+}
+void clearTerminal() {
+    // Membersihkan terminal
+    #ifdef _WIN32
+    system("cls"); // Untuk Windows
+    #else
+    system("clear"); // Untuk Unix/Linux
+    #endif
+}
 void back() {
-    char a;
-    cout << "\nTekan 'x' untuk kembali ke menu" << endl;
-    cin >> a;
-    if (a == 'x') {
+    string a;
+    do {
+        cout << "\nTekan 'x' untuk kembali ke menu" << endl;
+        cin >> a;
+        if (a == "x") {
+            clearTerminal();
+            break;
+        }
+        else {
+            cout << "\n*** Input tidak valid. Coba lagi. ***" << endl;
+        }
+    } while (true);
+}
+void greetingAnimate(int seconds) {
+    string greeting = thankU();
+
+    int greetingLength = greeting.size();
+    string spaces(greetingLength, ' ');
+
+    for (int i = seconds; i > 0; --i) {
+        cout << greeting;
+        this_thread::sleep_for(chrono::milliseconds(600));
+        clearTerminal();
+        this_thread::sleep_for(chrono::milliseconds(100));
+    }
+}
+void greeting() {
+    greetingAnimate(3);
+    cout << thankU();
+    cout << "\n             -=== Terimakasih, Selamat beraktivitas kembali! ===-" << endl;
+    this_thread::sleep_for(chrono::milliseconds(2000));
+    clearTerminal();
+}
+
+// Register & Login
+void registerUser() {
+    cout << "Daftar\nInformasi Akun\n";
+    cout << "Username: ";
+    cin >> user[0].username;
+    isUserRegistered = true;
+    cout << "Password: ";
+    cin >> user[0].password;
+    cout << "\nPendaftaran berhasil!\n";
+    countdown(2);
+    clearTerminal();
+}
+void loginUser() {
+    cout << "Login\n";
+    cout << "Masukkan username yang terdaftar: ";
+    string username;
+    cin >> username;
+    cout << "Password: ";
+    string password;
+    cin >> password;
+
+    if (isUserRegistered && username == user[0].username && password == user[0].password) {
+        cout << "\nLogin successful! Welcome, " << user[0].username << "!\n";
+        countdown(2);
+        clearTerminal();
+        menuPage();
+    }
+    else {
+        cout << "\n*** User not found. Please register first. ***\n";
+        countdown(2);
         clearTerminal();
     }
 }
 
+// Menu
 void about() {
     // Menu Tentang Perpustakaan
     clearTerminal();
@@ -120,22 +188,16 @@ void about() {
     cout << "Selamat menikmati petualangan intelektual Anda di Elins Library tempat di mana setiap cerita memiliki peluang untuk merajut kisahnya sendiri.Selamat membaca dan menemukan inspirasi!\n";
     back();
 }
-
 void bookList() {
     // Menu Daftar Buku
     clearTerminal();
     cout << "Daftar Buku - Elins Library\n" << endl;
-    cout << "No     Judul   Nama Penulis    Tahun" << endl;
+    cout << "No     Judul       Nama Penulis    Tahun" << endl;
     for (int i = 0; i < 50; i++) {
-        cout << books[i].numb << ".   " << books[i].judul << ";   " << books[i].namaPenulis << "  " << books[i].tahunTerbit << "." << endl;
+        cout << books[i].numb << ".   " << books[i].judul << "; " << books[i].namaPenulis << "  " << books[i].tahunTerbit << "." << endl;
     }
     back();
 }
-
-void bookReceipt() {
-
-}
-
 void borrowing() {
     clearTerminal();
     cout << "Daftar buku yang bisa dipinjam: \n" << endl;
@@ -149,119 +211,57 @@ void borrowing() {
     }
     int whatBook;
     do {
-        char yesOrNo;
+        string yesOrNo;
         cout << "\nPilih buku yang mau kamu pinjam(id): ";
         cin >> whatBook;
-
-        for (int i = randomNum; i < randomNum2; i++) {
-            if (books[i].uniqueId == whatBook) {
-                string loanedBook;
-                cout << books[i].judul << " " << books[i].namaPenulis << " " << books[i].tahunTerbit << " id:" << books[i].uniqueId << "." << endl;
-                cout << "Apakah judulnya sudah sesuai?(y/n)";
-                cin >> yesOrNo;
-                if (yesOrNo == 'y') {
-                    cout << "Terimakasih atas kunjungan anda di perpustakaan kami! Semoga buku yang anda pinjam bermanfaat." << endl;
-                    loanedBook = books[i].judul;
-                    user[0].loanHistory = loanedBook;
-                    isBorrow = true;
-                }
-                else {
-                    cout << "Silahkan pilih ulang!" << endl;
-                    isBorrow = false;
+        if (whatBook >= randomNum && whatBook <= randomNum2) {
+            for (int i = randomNum; i < randomNum2; i++) {
+                if (books[i].uniqueId == whatBook) {
+                    string loanedBook;
+                    cout << books[i].judul << " " << books[i].namaPenulis << " " << books[i].tahunTerbit << " id:" << books[i].uniqueId << "." << endl;
+                    cout << "Apakah judulnya sudah sesuai?(y/n)";
+                    cin >> yesOrNo;
+                    if (yesOrNo == "y") {
+                        cout << "Terimakasih atas kunjungan anda di perpustakaan kami! Semoga buku yang anda pinjam bermanfaat." << endl;
+                        loanedBook = books[i].judul;
+                        user[0].loanHistory = loanedBook;
+                        isBorrow = true;
+                    }
+                    else {
+                        cout << "Silahkan pilih ulang!" << endl;
+                        isBorrow = false;
+                    }
                 }
             }
+        }
+        else {
+            cout << "Id buku tidak ditemukan, silahkan pilih ulang." << endl;
+            cin.clear();
+            cin.ignore(123, '\n');
         }
     } while (isBorrow == false);
     
     back();
 }
-
 void returnBook() {
-    cout << "Berikut daftar buku yang pernah kamu pinjam: " << endl;
-    cout << "Username: " << user[0].username << endl;
-    cout << "Judul buku: " << user[0].loanHistory << endl;
-    char yOrN;
-    cout << "Apakah kamu mau mengembalikan buku tersebut?(y/n): ";
-    cin >> yOrN;
-    if (yOrN == 'y') {
-        cout << "Buku telah berhasil dikembalikan, Terimakasih!" << endl;
-    }
-    else if (yOrN == 'n') {
-        cout << "Mohon perhatikan tanggal pengembalian buku, jika melebihi batas maksimal waktu pengembalian buku akan dikenakan denda, Terimakasih!" << endl;
-    }
-    else cout << "Masukkan pilihan yang benar(y/n)" << endl;
-
-}
-
-void report() {
-    cout << "laporan peminjaman\n";
-}
-
-void countdown(int seconds) {
-    cout << endl;
-    for (int i = seconds; i > 0; --i) {
-        std::cout << "Tunggu sebentar! Kamu akan diarahkan ke halaman selanjutnya dalam: " << i << " seconds...\r" << std::flush;
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
-}
-
-void greetingAnimate(int seconds) {
-    string greeting = R"(
-         /$$$$$$$$ /$$                           /$$             /$$     /$$                  /$$
-        |__  $$__/| $$                          | $$            |  $$   /$$/                 | $$
-           | $$   | $$$$$$$   /$$$$$$  /$$$$$$$ | $$   /$$       \  $$ /$$//$$$$$$  /$$   /$$| $$
-           | $$   | $$__  $$ |____  $$| $$__  $$| $$  /$$/        \  $$$$//$$__  $$| $$  | $$| $$
-           | $$   | $$  \ $$  /$$$$$$$| $$  \ $$| $$$$$$/          \  $$/| $$  \ $$| $$  | $$|__/
-           | $$   | $$  | $$ /$$__  $$| $$  | $$| $$_  $$           | $$ | $$  | $$| $$  | $$    
-           | $$   | $$  | $$|  $$$$$$$| $$  | $$| $$ \  $$          | $$ |  $$$$$$/|  $$$$$$/ /$$
-           |__/   |__/  |__/ \_______/|__/  |__/|__/  \__/          |__/  \______/  \______/ |__/
-    )";
-
-    int greetingLength = greeting.size();
-    string spaces(greetingLength, ' ');
-
-    for (int i = seconds; i > 0; --i) {
-        std::cout << greeting;
-        std::this_thread::sleep_for(std::chrono::milliseconds(600));
-        clearTerminal();
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
-}
-
-void registerUser() {
-    cout << "Registration\n";
-    cout << "Enter your username: ";
-    cin >> user[0].username;
-    isUserRegistered = true;
-    cout << "Enter your password: ";
-    cin >> user[0].password;
-    cout << "Registration successful!\n";
-    countdown(1);
-    clearTerminal();
-}
-
-void loginUser() {
-    cout << "Login\n";
-    cout << "Masukkan ID/username: ";
-    string username;
-    cin >> username;
-    cout << "Masukkan Password: ";
-    string password;
-    cin >> password;
-
-    if (isUserRegistered && username == user[0].username && password == user[0].password) {
-        cout << "Login successful! Welcome, " << user[0].username << "!\n";
-        countdown(1);
-        clearTerminal();
-        menuPage();
-    }
+    if (user[0].loanHistory == "loanHistory") cout << "Kamu belum melakukan peminjaman buku." << endl;
     else {
-        cout << "\n*** User not found. Please register first. ***\n";
-        countdown(1);
-        clearTerminal();
+        cout << "Berikut buku yang pernah kamu pinjam: \n" << endl;
+        cout << "Username: " << user[0].username << endl;
+        cout << "Judul buku: " << user[0].loanHistory << "\n\n";
+        char yOrN;
+        cout << "Apakah kamu mau mengembalikan buku tersebut?(y/n): ";
+        cin >> yOrN;
+        if (yOrN == 'y') {
+            cout << "Buku telah berhasil dikembalikan, Terimakasih!" << endl;
+        }
+        else if (yOrN == 'n') {
+            cout << "Mohon perhatikan tanggal pengembalian buku, jika melebihi batas maksimal waktu pengembalian buku akan dikenakan denda, Terimakasih!" << endl;
+        }
+        else cout << "Masukkan pilihan yang benar(y/n)" << endl;
     }
+    back();
 }
-
 void menuPage() {
     int pilihan;
     do {
@@ -274,9 +274,8 @@ void menuPage() {
         cout << "2. Daftar Buku\n";
         cout << "3. Peminjaman\n";
         cout << "4. Pengembalian\n";
-        cout << "5. Laporan\n";
-        cout << "6. Keluar\n";
-        cout << "Pilih menu (1-6): ";
+        cout << "5. Keluar\n";
+        cout << "Pilih menu (1-5): ";
         cin >> pilihan;
         cout << endl;
 
@@ -298,44 +297,24 @@ void menuPage() {
             returnBook();
             break;
         case 5:
-            // Implementasi laporan
-            report();
-            break;
-        case 6:
             cout << "Terima kasih telah menggunakan layanan perpustakaan kami!" << endl;
             clearTerminal();
-            thankU();
+            greeting();
             isAccesApp = false;
             break;
         default:
             cout << "Pilihan tidak valid. Silakan pilih kembali." << endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+            this_thread::sleep_for(chrono::milliseconds(2000));
         }
-    } while (pilihan != 6);
+    } while (pilihan != 5);
 }
 
-void thankU() {
-    greetingAnimate(3);
-    cout << R"(
-         /$$$$$$$$ /$$                           /$$             /$$     /$$                  /$$
-        |__  $$__/| $$                          | $$            |  $$   /$$/                 | $$
-           | $$   | $$$$$$$   /$$$$$$  /$$$$$$$ | $$   /$$       \  $$ /$$//$$$$$$  /$$   /$$| $$
-           | $$   | $$__  $$ |____  $$| $$__  $$| $$  /$$/        \  $$$$//$$__  $$| $$  | $$| $$
-           | $$   | $$  \ $$  /$$$$$$$| $$  \ $$| $$$$$$/          \  $$/| $$  \ $$| $$  | $$|__/
-           | $$   | $$  | $$ /$$__  $$| $$  | $$| $$_  $$           | $$ | $$  | $$| $$  | $$    
-           | $$   | $$  | $$|  $$$$$$$| $$  | $$| $$ \  $$          | $$ |  $$$$$$/|  $$$$$$/ /$$
-           |__/   |__/  |__/ \_______/|__/  |__/|__/  \__/          |__/  \______/  \______/ |__/
-    )";
-    cout << "\n             -=== Terimakasih, Selamat beraktivitas kembali! ===-" << endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-    clearTerminal();
-}
-
-int main() {
+// Main program
+void runProgram() {
     //Welcome message
     char welcome;
     do {
-        std::cout << R"(
+        cout << R"(
         ___                            ___      ___                                           
        (   ) .-.                      (   ) .-.(   )                                          
   .--.  | | ( __) ___ .-.     .--.     | | ( __)| |.-.  ___ .-.    .---.  ___ .-.   ___  ___  
@@ -356,7 +335,7 @@ int main() {
         cout << "3. Keluar" << endl;
         cout << "Silahkan Login terlebih dahulu! jika belum memiliki akun pilih daftar(1/2): ";
         cin >> welcome;
-        
+
         switch (welcome) {
         case '1':
             // Login page
@@ -370,14 +349,20 @@ int main() {
             break;
         case '3':
             //Keluar
-            return 0;
+            exit(0);
         default:
-            cout << "Masukan pilihan nomor yang benar (1/2/3)" << std::endl;
+            cout << "Masukan pilihan nomor yang benar (1/2/3)" << endl;
             cin.clear();
             cin.ignore(123, '\n');
+            this_thread::sleep_for(chrono::milliseconds(2000));
             clearTerminal();
-            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
             break;
-        } 
+        }
     } while (isAccesApp == true);
+}
+
+int main() {
+    isAccesApp = true;
+    runProgram();
+    return 0;
 }
