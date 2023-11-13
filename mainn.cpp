@@ -1,4 +1,5 @@
 ﻿#include <iostream> // input output
+#include <iomanip>
 #include <thread>  // Untuk fungsi sleep_for
 #include <chrono>  // Untuk waktu
 #include <cstdlib> // Untuk fungsi system()
@@ -6,9 +7,29 @@
 
 using namespace std;
 
+struct userData {
+    string username;
+    string password;
+    string loanHistory;
+};
+
+userData user[1];
+
 bool isUserRegistered = false, isAccesApp = true, isBorrow = false;
-string loggedInUser, passwordUser;
 void menuPage(), thankU();
+
+/*void getLocalTime() {
+    // Mengatur zona waktu ke WIB (UTC+7)
+    std::chrono::hours offset(7);
+    std::chrono::time_point<std::chrono::system_clock> currentTime = std::chrono::system_clock::now() + offset;
+
+    // Mengonversi waktu ke time_t
+    std::time_t time = std::chrono::system_clock::to_time_t(currentTime);
+
+    // Menampilkan tanggal dan bulan dalam zona waktu WIB
+    std::tm* wibTime = std::localtime(&time);
+    std::cout << std::put_time(wibTime, "%d %B") << std::endl;
+}*/
 
 struct listBooks {
     // struct daftar buku
@@ -134,11 +155,14 @@ void borrowing() {
 
         for (int i = randomNum; i < randomNum2; i++) {
             if (books[i].uniqueId == whatBook) {
+                string loanedBook;
                 cout << books[i].judul << " " << books[i].namaPenulis << " " << books[i].tahunTerbit << " id:" << books[i].uniqueId << "." << endl;
                 cout << "Apakah judulnya sudah sesuai?(y/n)";
                 cin >> yesOrNo;
                 if (yesOrNo == 'y') {
                     cout << "Terimakasih atas kunjungan anda di perpustakaan kami! Semoga buku yang anda pinjam bermanfaat." << endl;
+                    loanedBook = books[i].judul;
+                    user[0].loanHistory = loanedBook;
                     isBorrow = true;
                 }
                 else {
@@ -153,7 +177,20 @@ void borrowing() {
 }
 
 void returnBook() {
-    cout << "pengembalian buku\n";
+    cout << "Berikut daftar buku yang pernah kamu pinjam: " << endl;
+    cout << "Username: " << user[0].username << endl;
+    cout << "Judul buku: " << user[0].loanHistory << endl;
+    char yOrN;
+    cout << "Apakah kamu mau mengembalikan buku tersebut?(y/n): ";
+    cin >> yOrN;
+    if (yOrN == 'y') {
+        cout << "Buku telah berhasil dikembalikan, Terimakasih!" << endl;
+    }
+    else if (yOrN == 'n') {
+        cout << "Mohon perhatikan tanggal pengembalian buku, jika melebihi batas maksimal waktu pengembalian buku akan dikenakan denda, Terimakasih!" << endl;
+    }
+    else cout << "Masukkan pilihan yang benar(y/n)" << endl;
+
 }
 
 void report() {
@@ -191,14 +228,13 @@ void greetingAnimate(int seconds) {
     }
 }
 
-
 void registerUser() {
     cout << "Registration\n";
     cout << "Enter your username: ";
-    cin >> loggedInUser;
+    cin >> user[0].username;
     isUserRegistered = true;
     cout << "Enter your password: ";
-    cin >> passwordUser;
+    cin >> user[0].password;
     cout << "Registration successful!\n";
     countdown(1);
     clearTerminal();
@@ -213,8 +249,8 @@ void loginUser() {
     string password;
     cin >> password;
 
-    if (isUserRegistered && username == loggedInUser && password == passwordUser) {
-        cout << "Login successful! Welcome, " << loggedInUser << "!\n";
+    if (isUserRegistered && username == user[0].username && password == user[0].password) {
+        cout << "Login successful! Welcome, " << user[0].username << "!\n";
         countdown(1);
         clearTerminal();
         menuPage();
