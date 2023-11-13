@@ -8,6 +8,7 @@ ELINS Library adalah proyek aplikasi perpustakaan sederhana yang dikembangkan ol
 1. Kurniawan Arthur Jarnuzi
 2. Lutfi Awaludin Safi
 3. Muhammad Winner An Nuur Alam Suskalanggeng
+   
 Sebagai bagian dari tugas praktikum pemrograman. Proyek ini dirancang untuk memenuhi kebutuhan dasar perpustakaan, memungkinkan pengguna untuk menjelajahi daftar buku, melakukan peminjaman, dan mengembalikan buku.
 
 ## Fitur
@@ -26,10 +27,10 @@ Sebagai bagian dari tugas praktikum pemrograman. Proyek ini dirancang untuk meme
 ### Instalasi
 1. Clone repositori ini ke mesin lokal Anda.
    ```bash
-   git clone https://github.com/username/elins-library.git
-   cd elins-library
-   g++ main.cpp -o elins-library
-    ./elins-library
+   git clone https://github.com/kurniawanArthur/ElinsLibrary.git
+   cd ElinsLibrary
+   g++ main.cpp -o ElinsLibrary
+    ./ElinsLibrary
 
 
 ### Penggunaan
