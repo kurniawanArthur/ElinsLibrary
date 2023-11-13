@@ -5,9 +5,9 @@ Aplikasi Perpustakaan Sederhana menggunakan C++
 ## Deskripsi
 
 ELINS Library adalah proyek aplikasi perpustakaan sederhana yang dikembangkan oleh tiga individu yaitu:
-1. Kurniawan Arthur Jarnuzi
-2. Lutfi Awaludin Safi
-3. Muhammad Winner An Nuur Alam Suskalanggeng
+1. Kurniawan Arthur Jarnuzi                         [@kurnaiwanArthur](https://github.com/kurniawanArthur)
+2. Lutfi Awaludin Safi                              [@lutfiasafi](https://github.com/lutfiasafi)
+3. Muhammad Winner An Nuur Alam Suskalanggeng       [@MuhammadWinner](https://github.com/MuhammadWinner)
    
 Sebagai bagian dari tugas praktikum pemrograman. Proyek ini dirancang untuk memenuhi kebutuhan dasar perpustakaan, memungkinkan pengguna untuk menjelajahi daftar buku, melakukan peminjaman, dan mengembalikan buku.
 
