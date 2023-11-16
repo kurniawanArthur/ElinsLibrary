@@ -139,7 +139,7 @@ void greeting() {
     greetingAnimate(3);
     cout << thankU();
     cout << "\n             -=== Terimakasih, Selamat beraktivitas kembali! ===-" << endl;
-    this_thread::sleep_for(chrono::milliseconds(2000));
+    sleep("miliseconds", 2000);
     clearTerminal();
 }
 void greetingAnimate(int seconds) {
