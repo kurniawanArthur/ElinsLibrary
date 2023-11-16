@@ -9,7 +9,7 @@ using namespace std;
 bool isUserRegistered = false, isAccesApp = false, isBorrow = false;
 
 // Deklarasi fungsi
-void menuPage(), greeting(), clearTerminal(), back(), registerUser(), loginUser(), about(), bookList(), borrowing(), returnBook(), runProgram() ;
+void menuPage(), greeting(), clearTerminal(), back(), registerUser(), loginUser(), about(), bookList(), borrowing(), returnBook(), runProgram(), sleep(string satuanWaktu, int lamanya), greetingAnimate(int seconds);
 
 // Data
 struct userData {
@@ -82,7 +82,7 @@ listBooks books[50] = {
     {50, "Hujan Matahari" ,"Fira Basuki",2005, 0062},
 };
 
-// Navigasi & Shortcut
+// Navigasi & Shortcut(utility)
 string thankU(){
     return  R"(
          /$$$$$$$$ /$$                           /$$             /$$     /$$                  /$$
@@ -95,11 +95,22 @@ string thankU(){
            |__/   |__/  |__/ \_______/|__/  |__/|__/  \__/          |__/  \______/  \______/ |__/
     )";
 }
+void sleep(string satuanWaktu, int lamanya) {
+    if (satuanWaktu == "miliseconds") {
+        this_thread::sleep_for(chrono::milliseconds(lamanya));
+    }else if (satuanWaktu == "seconds") {
+        this_thread::sleep_for(chrono::seconds(lamanya));
+    }else if (satuanWaktu == "minutes") {
+        this_thread::sleep_for(chrono::minutes(lamanya));
+    }else if (satuanWaktu == "hours") {
+        this_thread::sleep_for(chrono::hours(lamanya));
+    } 
+}
 void countdown(int seconds) {
     cout << endl;
     for (int i = seconds; i > 0; --i) {
         cout << "Tunggu sebentar! Kamu akan diarahkan ke halaman selanjutnya dalam: " << i << " seconds...\r" << flush;
-        this_thread::sleep_for(chrono::seconds(1));
+        sleep("seconds", 1);
     }
 }
 void clearTerminal() {
@@ -124,6 +135,13 @@ void back() {
         }
     } while (true);
 }
+void greeting() {
+    greetingAnimate(3);
+    cout << thankU();
+    cout << "\n             -=== Terimakasih, Selamat beraktivitas kembali! ===-" << endl;
+    this_thread::sleep_for(chrono::milliseconds(2000));
+    clearTerminal();
+}
 void greetingAnimate(int seconds) {
     string greeting = thankU();
 
@@ -132,22 +150,15 @@ void greetingAnimate(int seconds) {
 
     for (int i = seconds; i > 0; --i) {
         cout << greeting;
-        this_thread::sleep_for(chrono::milliseconds(600));
+        sleep("miliseconds", 600);
         clearTerminal();
-        this_thread::sleep_for(chrono::milliseconds(100));
+        sleep("miliseconds", 100);
     }
-}
-void greeting() {
-    greetingAnimate(3);
-    cout << thankU();
-    cout << "\n             -=== Terimakasih, Selamat beraktivitas kembali! ===-" << endl;
-    this_thread::sleep_for(chrono::milliseconds(2000));
-    clearTerminal();
 }
 
 // Register & Login
 void registerUser() {
-    cout << "Daftar\nInformasi Akun\n";
+    cout << "Daftar\n";
     cout << "Username: ";
     cin >> user[0].username;
     isUserRegistered = true;
@@ -304,7 +315,7 @@ void menuPage() {
             break;
         default:
             cout << "Pilihan tidak valid. Silakan pilih kembali." << endl;
-            this_thread::sleep_for(chrono::milliseconds(2000));
+            sleep("miliseconds", 2000);
         }
     } while (pilihan != 5);
 }
@@ -354,7 +365,7 @@ void runProgram() {
             cout << "Masukan pilihan nomor yang benar (1/2/3)" << endl;
             cin.clear();
             cin.ignore(123, '\n');
-            this_thread::sleep_for(chrono::milliseconds(2000));
+            sleep("miliseconds", 2000);
             clearTerminal();
             break;
         }
